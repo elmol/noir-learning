@@ -4,8 +4,21 @@ This file gives Claude Code the context it needs to assist effectively throughou
 
 ## Project Goal
 
-Build a Noir circuit that proves membership in a Merkle tree using **Poseidon2 commitments**.
-This circuit is part of a larger identity system that integrates with Rust.
+Build a Noir circuit that proves Merkle tree membership using **Poseidon2 commitments**,
+as part of a larger identity system. The full pipeline:
+
+```
+secret
+  └─► Poseidon2(secret) = commitment
+        └─► Merkle leaf
+              └─► Merkle tree construction
+                    └─► membership proof circuit (Noir)
+                          └─► Rust prover / verifier
+```
+
+**Learning constraint:** Understanding before generating. Explanation-first prompts,
+incremental pair programming, metacognition checkpoints at the end of every session.
+See `PLAN.md` for the full plan.
 
 ## Stack
 

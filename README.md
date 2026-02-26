@@ -1,15 +1,15 @@
 # Noir + Claude Code: 4-Day Learning Journey
 
-**Technical goal:** Build a Noir circuit that proves membership in a Merkle tree using Poseidon2 commitments — part of a larger identity system with Rust.
+**Technical project:** Build a Noir circuit that proves Merkle tree membership using Poseidon2 commitments — part of a larger identity system (secret → commitment → Merkle tree → Rust prover).
 
 ## Progress Table
 
-| Day | Noir Topic | Claude Code Topic | Status |
-|-----|-----------|-------------------|--------|
-| 1 | Noir basics: fields, circuits, constraints | Claude Code as a coding assistant | [ ] Pending |
-| 2 | Hashing with Poseidon2 | Prompt engineering for ZK | [ ] Pending |
-| 3 | Merkle tree membership proof | Code generation + iteration | [ ] Pending |
-| 4 | Rust integration via `noir_rs` / UltraHonk | End-to-end workflow automation | [ ] Pending |
+| Day | Noir Topic | Claude Code Modules | Status |
+|-----|-----------|---------------------|--------|
+| 1 | Fields, circuits, constraints, `nargo` basics | 1 · Coding Asst Architecture, 2 · Tool Use, 3 · Context Mgmt | [ ] Pending |
+| 2 | Poseidon2 hashing, commitment circuit | 3 · Context Mgmt (deep), 4 · Visual Communication, 8 · Thinking Modes | [ ] Pending |
+| 3 | Merkle tree membership proof circuit | 5 · Custom Automation, 8 · Thinking Modes | [ ] Pending |
+| 4 | Rust prover integration, end-to-end | 6 · MCP Integration, 7 · GitHub Workflow | [ ] Pending |
 
 ## Repository Structure
 
@@ -17,6 +17,7 @@
 .
 ├── CLAUDE.md              # Context file for Claude Code
 ├── LEARNINGS.md           # Consolidated learnings (filled during 4 days)
+├── PLAN.md                # Full 4-day learning plan with milestones and schedule
 ├── README.md              # This file
 ├── days/
 │   ├── day-01/
