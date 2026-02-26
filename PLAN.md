@@ -284,3 +284,96 @@ Keep `CLAUDE.md` updated. After each day, add:
 - What the current status is
 
 This is how Claude Code stays useful across sessions.
+
+---
+
+## Common Pitfalls
+
+### Pitfall 1 — Asking for Too Much at Once
+
+The default instinct when opening Claude Code is to dump the full problem:
+"Write a Noir circuit that takes a secret, hashes it with Poseidon2, and verifies
+Merkle membership against a known root."
+
+Claude Code will produce something that compiles. The problem is that you now own
+code you don't understand, in a language you're still learning, for a domain
+(ZK circuits) where the compiler cannot catch most logical errors.
+
+**Why this is especially dangerous in ZK circuits:**
+
+In a normal program, wrong logic produces wrong output — the bug is visible.
+In a ZK circuit, wrong logic can still produce a valid proof. The proof system
+only guarantees that the prover knew *some* witness satisfying *the constraints
+you wrote*. If your constraints are incomplete, the proof passes for inputs that
+should be rejected.
+
+Concrete example in this project:
+
+```noir
+// BROKEN: proves commitment is on some path, but doesn't bind it to secret
+fn main(commitment: pub Field, root: pub Field, path: [Field; 3], indices: [u1; 3]) {
+    assert(root == compute_merkle_root(commitment, path, indices));
+}
+```
+
+This circuit compiles, the proof passes, and `nargo verify` returns OK — but the
+prover never had to know the secret. Any commitment already in the tree is provable
+by anyone who knows the tree structure. The missing constraint is:
+
+```noir
+assert(commitment == Poseidon2::hash([secret], 1));
+```
+
+If Claude Code generated the full circuit in one shot and you just ran `nargo test`,
+you would not catch this. The test would pass.
+
+**How to avoid it in this project:**
+
+- Never ask Claude Code to write a full function. Ask it to write one constraint at
+  a time, then ask: "What attack is possible if I stop here?"
+- After each new constraint, ask: "What can a malicious prover still do with just
+  the constraints we have so far?"
+- The Day 3 metacognition checkpoint question 3 specifically targets this:
+  "Why does the circuit have *both* `commitment == Poseidon2(secret)` AND the
+  Merkle check?" — if you can't answer that, the circuit is not safe.
+
+### Pitfall 2 — Trusting a Passing Test as Proof of Correctness
+
+`nargo test` runs the circuit with specific inputs and checks assertions. It does not
+check that the set of constraints is *complete* — only that it is *satisfiable* for
+those inputs.
+
+A test like:
+```noir
+#[test]
+fn test_membership() {
+    main(secret, commitment, root, path, indices); // passes
+}
+```
+
+...tells you the circuit is satisfiable for *this* witness. It does not tell you
+whether a proof with a *different*, malformed witness would also pass.
+
+Always pair `nargo test` with a negative test: construct an input that *should fail*
+(e.g., a wrong secret, a path to a leaf not in the tree) and assert the circuit
+rejects it.
+
+### Pitfall 3 — Losing Context Between Sessions Without Updating CLAUDE.md
+
+Claude Code has no memory across sessions. If you don't update `CLAUDE.md` at the
+end of each day, the next session starts cold. The symptom: Claude Code gives
+generic Noir advice instead of advice specific to your half-built identity system.
+
+Fix: the last 30 minutes of each session are reserved for updating `CLAUDE.md`
+(current status checklist) and `NOTES.md`. Non-negotiable.
+
+---
+
+## Claude Code Workflow Map
+
+| Day | Noir Topic | Claude Code Concept | Why That Pairing |
+|-----|-----------|---------------------|-----------------|
+| 1 | Fields, circuits, constraints | **Tool Use + Context Management** (Modules 1–3) | Your first Noir session needs Claude Code to *explain*, not generate. Tool Use shows you how it reads files and builds understanding. Context Management (CLAUDE.md) establishes the project memory you'll rely on for 4 days — getting this right on Day 1 compounds across all sessions. |
+| 2 | Poseidon2 commitment: `Poseidon2(secret) = commitment` | **Thinking Modes + Visual Communication** (Modules 8, 4) | Poseidon2's ZK-friendliness is a non-obvious design choice. Extended thinking forces Claude Code to reason about tradeoffs (R1CS gate cost, algebraic structure) before writing a line. The ASCII diagram prompt (Module 4) makes the full identity pipeline concrete — without it, commitment sits disconnected from the Merkle layer you'll build next. |
+| 3 | Merkle path verification loop | **Custom Automation** (Module 5) | The Merkle loop is the most mechanically repetitive part of the project: compile → fix → test → repeat. Custom slash commands eliminate friction exactly here, letting you stay focused on whether the *constraints are correct*, not on retyping `nargo compile`. Also: this is the day where the incomplete-constraint pitfall is most likely to strike — automation frees cognitive load for correctness checking. |
+| 4 | Rust ↔ Noir interface, end-to-end prove/verify | **MCP + GitHub Workflow** (Modules 6, 7) | Day 4 is the first time you hold two codebases simultaneously (Rust prover + Noir circuit). MCP is the tool for exactly this — crossing file-system and language boundaries without losing context. GitHub Actions CI on `project/circuits/` is the payoff of Day 3's automation work: the circuit now has a safety net that runs on every push, which matters because the Rust integration may inadvertently break circuit assumptions. |
