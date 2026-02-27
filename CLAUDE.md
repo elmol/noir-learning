@@ -50,7 +50,9 @@ Each `days/day-XX/` contains:
 
 ## Current Status
 
-- [ ] Day 1: Noir basics + dev environment working
+- [x] Day 1: Noir basics + dev environment working
+  - `days/day-01/hello_circuit` — initial learning circuit (Field equality, positive + negative tests)
+  - `days/day-01/commitment_circuit` — commitment concept circuit (secret/commitment placeholder; Poseidon2 comes Day 2)
 - [ ] Day 2: Poseidon2 hash circuit compiling with nargo
 - [ ] Day 3: Merkle membership proof circuit passing tests
 - [ ] Day 4: Rust integration proving/verifying end-to-end

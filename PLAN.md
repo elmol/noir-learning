@@ -49,22 +49,22 @@ Stand up the dev environment, understand Noir's mental model (circuits ≠ progr
 and write a first circuit that compiles and passes `nargo test`.
 
 ### Noir Milestones
-- [ ] Install nargo, run `nargo --version`
-- [ ] `nargo new hello_circuit` — inspect the generated structure
-- [ ] Understand `Field` vs integers; `pub` vs private inputs
-- [ ] Write `fn main(x: Field, y: pub Field) { assert(x == y); }`
-- [ ] Run `nargo compile` and `nargo test`
-- [ ] Write a second circuit: `fn main(secret: Field, commitment: pub Field)`
+- [x] Install nargo, run `nargo --version`
+- [x] `nargo new hello_circuit` — inspect the generated structure
+- [x] Understand `Field` vs integers; `pub` vs private inputs
+- [x] Write `fn main(x: Field, y: pub Field) { assert(x == y); }`
+- [x] Run `nargo compile` and `nargo test`
+- [x] Write a second circuit: `fn main(secret: Field, commitment: pub Field)`
       where commitment is just `secret` for now (Poseidon2 comes Day 2)
 
 ### Claude Code Milestones
-- [ ] **Module 1** — Understand how Claude Code uses tools under the hood
+- [x] **Module 1** — Understand how Claude Code uses tools under the hood
       (Read, Grep, Bash). Ask it to explain a Noir file it just read.
-- [ ] **Module 2** — Watch it use multiple tools for one question.
+- [x] **Module 2** — Watch it use multiple tools for one question.
       Prompt: "What does this circuit do? Walk me through each line."
-- [ ] **Module 3** — Set up `CLAUDE.md` as living context.
+- [x] **Module 3** — Set up `CLAUDE.md` as living context.
       Test: close and reopen session, ask "what is this project?" — it should answer correctly.
-- [ ] Practice the **explanation-first pattern**:
+- [x] Practice the **explanation-first pattern**:
       "Explain what a Field element is in Noir before writing any code."
 
 ### Session Schedule (~5h)
