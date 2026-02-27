@@ -87,6 +87,47 @@ This file is filled progressively — one entry per day.
 - **ASCII diagrams (Module 4) make architecture concrete.** Seeing the full pipeline in
   one view clarified exactly where today's circuit sits and what it does not yet prove.
 
-<!-- Day 3 learnings will go here -->
+## Day 3 — Merkle Membership Proof Circuit + Custom Automation
+
+### ZK / Noir Concepts
+
+- **The Merkle path loop needs `indices` to be correct.** At each step, the index
+  determines whether the current node is the left or right child. Without it, the
+  computed root is wrong for any right-child leaf — proofs fail for half the tree.
+
+- **Both circuit constraints are necessary and non-redundant.**
+  `assert(commitment == Poseidon2(secret))` proves secret ownership.
+  `assert(root == compute_merkle_root(...))` proves tree membership.
+  Either one alone is exploitable: the first without the second proves you know a secret
+  but not that it's registered; the second without the first lets anyone claim membership
+  for any commitment without knowing its secret.
+
+- **`u1` is a security constraint, not just a type.** Using `[u1; N]` for indices
+  enforces binary values (0 or 1 only) via range constraints. An unconstrained index
+  type could allow malformed paths.
+
+- **The linkability problem.** Reusing the same commitment as a public input across
+  multiple proofs allows an observer to correlate those proofs to the same identity —
+  without ever learning the secret. Solution: nullifiers (`Poseidon2(secret, context)`),
+  which produce a unique unlinkable value per action.
+
+- **The `message_size` parameter in Poseidon2.** The second argument to
+  `Poseidon2::hash(inputs, n)` is the number of input elements to process, not the
+  output length. The function always returns a single `Field`. Corrects the Day 2
+  explanation which incorrectly called it "output length."
+
+### Claude Code Workflow
+
+- **Code exploration > code generation for security-critical circuits.** Asking Claude
+  Code to "find all constraints and explain what attack each one prevents" is more
+  valuable than asking it to write the circuit. The audit surfaces assumptions you
+  might not have thought to check.
+
+- **Custom slash commands require a session restart.** Files in `.claude/commands/`
+  are loaded at startup. Create them, restart, and they appear in the slash menu.
+
+- **Retrospective prompts test real context awareness.** "What have we built so far?"
+  forces Claude Code to read files rather than infer from conversation. The answer is
+  only as accurate as the files — which is why updating CLAUDE.md every day matters.
 
 <!-- Day 4 learnings will go here -->

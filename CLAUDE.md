@@ -56,7 +56,10 @@ Each `days/day-XX/` contains:
 - [x] Day 2: Poseidon2 hash circuit compiling with nargo
   - `days/day-02/poseidon2_commitment` — real Poseidon2 commitment circuit (external lib: poseidon v0.1.1)
   - Stdlib path `std::hash::poseidon2` unavailable in current nargo version; use external crate instead
-- [ ] Day 3: Merkle membership proof circuit passing tests
+- [x] Day 3: Merkle membership proof circuit passing tests
+  - `days/day-03/merkle_membership` — full membership proof (hash_pair + compute_merkle_root + both constraints)
+  - `project/circuits/` — final circuit copied here
+  - Custom slash commands: `.claude/commands/` (nargo-test, nargo-compile, nargo-prove)
 - [ ] Day 4: Rust integration proving/verifying end-to-end
 
 ## Frequent nargo Commands

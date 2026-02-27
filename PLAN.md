@@ -153,25 +153,23 @@ fn main(
 ```
 
 ### Noir Milestones
-- [ ] Implement `fn hash_pair(left: Field, right: Field) -> Field` using Poseidon2
-- [ ] Implement `fn compute_merkle_root(leaf, path, indices) -> Field`
+- [x] Implement `fn hash_pair(left: Field, right: Field) -> Field` using Poseidon2
+- [x] Implement `fn compute_merkle_root(leaf, path, indices) -> Field`
       — loop over depth, conditionally swap left/right, hash pair
-- [ ] Full main circuit: assert `commitment == Poseidon2(secret)` AND
+- [x] Full main circuit: assert `commitment == Poseidon2(secret)` AND
       `root == compute_merkle_root(commitment, path, indices)`
-- [ ] Write `nargo test` with a hand-computed 4-leaf Merkle tree
-- [ ] Move to `project/circuits/`, run `nargo compile` + `nargo test` from there
+- [x] Write `nargo test` with a hand-computed 4-leaf Merkle tree
+- [x] Move to `project/circuits/`, run `nargo compile` + `nargo test` from there
 
 ### Claude Code Milestones
-- [ ] **Module 5** — Create custom slash commands for nargo workflows:
+- [x] **Module 5** — Create custom slash commands for nargo workflows:
       `/compile` → `nargo compile`, `/test` → `nargo test`, `/prove` → `nargo prove`
-- [ ] **Module 8** — Use thinking mode for the loop + index logic.
+- [x] **Module 8** — Use thinking mode for the loop + index logic.
       Prompt: "Think through the Merkle path loop. At each step, what are the
       two cases for indices[i]? Don't write code — explain the logic."
-- [ ] Practice **code exploration** (not generation):
-      Ask Claude Code to read the circuit and find all the constraints. Let it
-      explain them back to you before you wrote them.
-- [ ] **Retrospective mid-point**: ask Claude Code "What have we built so far?
-      Summarize the project state from the files." — test its context awareness.
+- [x] Practice **code exploration** (not generation):
+      Asked Claude Code to audit all constraints and explain what attack each prevents.
+- [x] **Retrospective mid-point**: Claude Code read files and gave accurate project summary.
 
 ### Session Schedule (~5h)
 
