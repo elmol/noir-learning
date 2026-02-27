@@ -46,7 +46,46 @@ This file is filled progressively — one entry per day.
   provide the substance yourself. Let it handle the editing. The content should reflect
   your understanding, not its inference.
 
-<!-- Day 2 learnings will go here -->
+## Day 2 — Poseidon2 Commitment + Thinking Modes
+
+### ZK / Noir Concepts
+
+- **Poseidon2 is ZK-friendly because it speaks the field's native language.** SHA256
+  simulates bit operations over a prime field (~25,000 constraints). Poseidon2 uses `x^5`
+  as its S-box — native field arithmetic — costing ~270 constraints. Both proof generation
+  and verification pay this cost, so the 100× difference matters on both sides.
+
+- **Commitment schemes require two properties, not one.** Hiding (commitment doesn't
+  reveal secret) is the obvious one. Binding (prover can't find two secrets with the same
+  commitment) is equally fundamental. A scheme that is hiding but not binding lets the
+  prover cheat after the fact.
+
+- **An unconstrained public input is a security hole.** Removing `assert` from a circuit
+  makes it accept any witness. Noir warns about this with "unused variable" — treat that
+  warning as a security signal, not a style issue.
+
+- **Production commitments need more than `Poseidon2(secret)`.** Missing pieces:
+  nonce (prevents same commitment appearing twice), domain separation (prevents collision
+  between commitment hashes and Merkle node hashes), nullifier (prevents replay).
+
+- **The external Poseidon library is required in nargo 1.0.0-beta.5.** The stdlib path
+  `std::hash::poseidon2` is not available. Use:
+  `poseidon = { tag = "v0.1.1", git = "https://github.com/noir-lang/poseidon" }`
+  and import as `use poseidon::poseidon2;`.
+
+### Claude Code Workflow
+
+- **Extended thinking mode is not a conversational trigger.** `/think`, `Ultrathink:`,
+  and "think carefully" do not activate a special mode. Extended thinking is an API-level
+  parameter. The practical equivalent: structure prompts to demand reasoning before code
+  ("explain the tradeoffs, don't write any code yet").
+
+- **Module 3 deep = Claude Code reads before it speaks.** When asked to compare two
+  circuits, it read both files plus CLAUDE.md before answering. The comparison was
+  grounded in actual file content, not inference.
+
+- **ASCII diagrams (Module 4) make architecture concrete.** Seeing the full pipeline in
+  one view clarified exactly where today's circuit sits and what it does not yet prove.
 
 <!-- Day 3 learnings will go here -->
 

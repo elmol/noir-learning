@@ -96,22 +96,22 @@ Understand why Poseidon2 is ZK-friendly. The output of this day is a working,
 tested commitment circuit.
 
 ### Noir Milestones
-- [ ] Use `std::hash::poseidon2::Poseidon2` to hash a field element
-- [ ] Circuit: `fn main(secret: Field, commitment: pub Field)`
+- [x] Use `std::hash::poseidon2::Poseidon2` to hash a field element
+- [x] Circuit: `fn main(secret: Field, commitment: pub Field)`
       with `assert(Poseidon2::hash([secret], 1) == commitment)`
-- [ ] `nargo test` passes for commitment circuit
-- [ ] Understand: why not SHA256? What makes a hash "circuit-friendly"?
+- [x] `nargo test` passes for commitment circuit
+- [x] Understand: why not SHA256? What makes a hash "circuit-friendly"?
 - [ ] Optional: hash two inputs → `Poseidon2::hash([a, b], 2)`
 
 ### Claude Code Milestones
-- [ ] **Module 8** — Use extended thinking mode for design questions.
+- [x] **Module 8** — Use extended thinking mode for design questions.
       Prompt: "Think carefully: why is Poseidon2 preferred over SHA256 in a ZK circuit?
       What are the tradeoffs? Don't write code yet."
-- [ ] **Module 3 (deep)** — Practice referencing project resources.
+- [x] **Module 3 (deep)** — Practice referencing project resources.
       Ask Claude Code to compare today's circuit against Day 1's and identify what changed.
-- [ ] **Module 4** — Use a visual/diagram prompt to map the full identity system.
+- [x] **Module 4** — Use a visual/diagram prompt to map the full identity system.
       Prompt: "Draw an ASCII diagram of the full identity system we are building."
-- [ ] Practice the **incremental pair programming pattern**:
+- [x] Practice the **incremental pair programming pattern**:
       Write one line, ask Claude Code to predict what the next constraint should be.
 
 ### Session Schedule (~5h)

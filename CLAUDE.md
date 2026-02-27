@@ -53,7 +53,9 @@ Each `days/day-XX/` contains:
 - [x] Day 1: Noir basics + dev environment working
   - `days/day-01/hello_circuit` — initial learning circuit (Field equality, positive + negative tests)
   - `days/day-01/commitment_circuit` — commitment concept circuit (secret/commitment placeholder; Poseidon2 comes Day 2)
-- [ ] Day 2: Poseidon2 hash circuit compiling with nargo
+- [x] Day 2: Poseidon2 hash circuit compiling with nargo
+  - `days/day-02/poseidon2_commitment` — real Poseidon2 commitment circuit (external lib: poseidon v0.1.1)
+  - Stdlib path `std::hash::poseidon2` unavailable in current nargo version; use external crate instead
 - [ ] Day 3: Merkle membership proof circuit passing tests
 - [ ] Day 4: Rust integration proving/verifying end-to-end
 
