@@ -1,0 +1,10 @@
+[package]
+name = "merkle_prover"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+light-poseidon = "0.2"
+ark-bn254 = "0.4"
+ark-ff = "0.4"
+hex = "0.4"

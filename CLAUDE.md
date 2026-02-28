@@ -25,7 +25,8 @@ See `PLAN.md` for the full plan.
 | Tool | Role |
 |------|------|
 | [Noir](https://noir-lang.org/) | ZK circuit DSL (`.nr` files) |
-| [nargo](https://noir-lang.org/docs/nargo/installation) | Compile, prove, verify circuits |
+| [nargo](https://noir-lang.org/docs/nargo/installation) v1.0.0-beta.18 | Compile + execute circuits (witness generation) |
+| [bb](https://github.com/AztecProtocol/aztec-packages) v0.72.1 | Barretenberg: prove + verify (separate from nargo) |
 | Rust | Backend: proof generation/verification, identity logic |
 
 ## Repository Structure
@@ -62,29 +63,42 @@ Each `days/day-XX/` contains:
   - Custom slash commands: `.claude/commands/` (nargo-test, nargo-compile, nargo-prove)
 - [ ] Day 4: Rust integration proving/verifying end-to-end
 
-## Frequent nargo Commands
+## Prove/Verify Workflow (nargo 1.0.0-beta.18 + bb 0.72.1)
+
+`nargo prove` and `nargo verify` are REMOVED. Use this pipeline:
 
 ```bash
-# Create a new Noir project
-nargo new <project_name>
-
-# Compile the circuit
+# 1. Compile circuit → target/<name>.json  (ACIR)
 nargo compile
 
-# Generate a proof (requires Prover.toml with inputs)
-nargo prove
+# 2. Write Prover.toml with inputs (decimal strings for Field elements)
+# secret = "1"
+# path = ["2", "3"]
+# indices = ["0", "0"]
+# commitment = "<Poseidon2(secret) as decimal>"
+# root = "<Merkle root as decimal>"
 
-# Verify a proof
-nargo verify
-
-# Run tests defined in the circuit
-nargo test
-
-# Execute the circuit (compute witness)
+# 3. Execute circuit → target/<name>.gz  (witness)
 nargo execute
 
-# Check nargo version
-nargo --version
+# 4. Generate verification key → target/vk
+bb write_vk -b target/<name>.json -o target/
+
+# 5. Generate proof → target/proof
+bb prove -b target/<name>.json -w target/<name>.gz -o target/
+
+# 6. Verify proof (exit 0 = valid)
+bb verify -k target/vk -p target/proof
+```
+
+## Other Frequent nargo Commands
+
+```bash
+nargo new <project_name>   # Create a new Noir project
+nargo compile              # Compile to ACIR
+nargo execute              # Compute witness (reads Prover.toml)
+nargo test                 # Run circuit tests
+nargo --version            # Check version
 ```
 
 ## Notes for Claude Code

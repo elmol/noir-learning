@@ -1,0 +1,32 @@
+name: Noir Circuit CI
+
+on:
+  push:
+    paths:
+      - 'project/circuits/**'
+  pull_request:
+    paths:
+      - 'project/circuits/**'
+
+jobs:
+  test:
+    name: Compile and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install nargo
+        run: |
+          curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash
+          echo "$HOME/.nargo/bin" >> $GITHUB_PATH
+          noirup --version 1.0.0-beta.18
+
+      - name: Compile circuit
+        working-directory: project/circuits/merkle_membership
+        run: nargo compile
+
+      - name: Run tests
+        working-directory: project/circuits/merkle_membership
+        run: nargo test

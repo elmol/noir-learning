@@ -130,4 +130,56 @@ This file is filled progressively — one entry per day.
   forces Claude Code to read files rather than infer from conversation. The answer is
   only as accurate as the files — which is why updating CLAUDE.md every day matters.
 
-<!-- Day 4 learnings will go here -->
+## Day 4 — Rust Integration + End-to-End Pipeline + Full Retrospective
+
+### ZK / Noir Concepts
+
+- **Witness = all wire values; `nargo execute` ≠ proof generation.** `nargo execute` solves
+  the circuit for given inputs and writes the complete witness — every wire value from inputs
+  through internal computation steps. `bb prove` then takes that witness and generates a
+  cryptographic proof. These are two distinct stages requiring two separate tools.
+
+- **Poseidon ≠ Poseidon2 — name similarity is a trap.** The original Poseidon hash function
+  (used in Circom and implemented by `light-poseidon` in Rust) and Poseidon2 (used in Noir)
+  are different constructions with different round constants and different S-box application
+  patterns. The same inputs produce completely different hash values. Always verify which
+  variant a library implements before relying on hash value compatibility across languages.
+
+- **`nargo test --show-output` is a cross-language debugging primitive.** When hash values
+  don't match across implementations, print the expected values from inside the circuit
+  using `std::println` in a debug test and run with `--show-output`. This is more reliable
+  than reverse-engineering external library parameters or reading source code.
+
+- **The proving pipeline changed in nargo 1.0.0-beta.18.** `nargo prove` and `nargo verify`
+  were removed. The current pipeline is:
+  `nargo compile` → `nargo execute` (witness) → `bb write_vk` → `bb prove` → `bb verify`.
+  `bb` (Barretenberg) is a separate binary at `~/.bb/bb`.
+
+- **Circuit weak points identified by retrospective:**
+  1. Hardcoded depth (`[Field; 2]`) — does not scale beyond 4 leaves
+  2. No domain separation — commitment hash and Merkle node hash use the same scheme
+  3. No nullifier — same commitment across multiple proofs leaks identity correlation
+  4. No blinding factor — `Poseidon2(secret)` with low-entropy secret is brute-forceable
+  5. Rust side has no native Poseidon2 — hash values are hardcoded, not computed
+
+- **`bb` is not a Rust-embeddable library.** Integrating native prove/verify into a Rust
+  application requires `noir_js` (TypeScript/browser) or waiting for Rust bindings to
+  stabilize. Shelling out to external binaries is the current practical approach but is
+  fragile and not production-ready.
+
+### Claude Code Workflow
+
+- **Retrospective prompts audit circuits better than code review prompts.** Asking "review
+  all files and give me a retrospective: weak points, what to refactor, what to study next"
+  produced a precise security audit covering missing nullifiers, domain separation, depth
+  generalization, and blinding — all critical gaps that normal code review might miss.
+
+- **CI validates compilation and test correctness, not security.** A GitHub Actions workflow
+  that runs `nargo compile` + `nargo test` with a pinned nargo version protects against
+  regressions and broken tests. It cannot verify that the circuit is secure, that constraints
+  are complete, or that the proving system is configured correctly.
+
+- **Claude Code's file-reading pattern is a feature, not overhead.** When asked to audit
+  a project, it reads every relevant file before answering. The retrospective answer was
+  grounded in actual circuit code, Rust source, CI configuration, and notes — not inference
+  from the conversation. This is what makes it useful for security-critical review.
